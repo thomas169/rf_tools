@@ -83,6 +83,7 @@ function saveSettings()
     localStorage.setItem(STORAGE_KEYS.shiftLvl, document.getElementById("shiftLvl").value);
     localStorage.setItem(STORAGE_KEYS.shiftDir, document.getElementById("shiftDir").value);
     localStorage.setItem(STORAGE_KEYS.manchesterMode, document.getElementById("manchesterMode").value);
+    localStorage.setItem(STORAGE_KEYS.keeloqInvert, document.getElementById("keeloqInvert").value);
     localStorage.setItem(STORAGE_KEYS.diffInit, document.getElementById("diffInit").value);
 
     // remember textarea size
@@ -104,6 +105,7 @@ function loadSettings()
     setIfExists("shiftLvl", STORAGE_KEYS.shiftLvl);
     setIfExists("shiftDir", STORAGE_KEYS.shiftDir);
     setIfExists("manchesterMode", STORAGE_KEYS.manchesterMode);
+    setIfExists("keeloqInvert", STORAGE_KEYS.keeloqInvert);
     setIfExists("diffInit", STORAGE_KEYS.diffInit);
 
     restoreTextareaSize();
