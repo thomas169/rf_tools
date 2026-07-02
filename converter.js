@@ -459,3 +459,32 @@ function encodeDiffManchester()
     document.getElementById("output").textContent = out.trim();
 
 }
+
+function encodeKeeloq()
+{
+    const rows = getBitsFromInput();
+    const mode = document.getElementById("keeloqInvert").value;
+    let out = "";
+    for (const row of rows) {
+        const bits = row.bits;
+        if (!bits || !isBinary(bits)) {
+            document.getElementById("output").textContent = "Input not valid";
+            return;
+        }
+        let encoded = "";
+        for (let i = 0; i < bits.length; i++) {
+            const bit = bits[i];
+            if (mode === "1") {
+                // 1 = 01,  0 = 10
+                encoded += (bit === "1") ? "100" : "110";
+            } else {
+                // 1 = 10,  0 = 01
+                encoded += (bit === "1") ? "110" : "100";
+            }
+        }
+        out += "Input Bits:\n" + bits + "\n" +
+                "Keeloq Encoded:\n" + encoded + "\n" +
+                "HEX:\n" + bitsToHex(encoded) + "\n\n";
+    }
+    document.getElementById("output").textContent = out.trim();
+}

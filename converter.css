@@ -55,6 +55,28 @@ button:hover {
     word-break: break-all;
 }
 
+.title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.github-link {
+    justify-self: end;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity .2s, transform .2s;
+}
+
+.github-link:hover {
+    color: #fff;
+    opacity: 1;
+    transform: scale(1.1);
+}
 .small-select {
     width: 120px;
 }
