@@ -49,13 +49,20 @@
         <option value="0">0</option>
         <option value="1">1</option>
     </select>
+    <label>Keeloq:</label>
+    <select id="keeloqInvert" class="small-select">
+        <option value="0">0</option>
+        <option value="1">1</option>
+    </select>
     <h3>Actions</h3>
     <button id="convertBtn" onclick="convert()">Convert</button>
     <button onclick="shiftBits()">Shift Bits</button>
     <button onclick="decodeManchester()">Decode Manchester</button>
     <button onclick="decodeDiffManchester()">Decode Differential Manchester</button>
+    <button onclick="decodeKeeloq()">Decode Keeloq</button>
     <button onclick="encodeManchester()">Encode Manchester</button>
     <button onclick="encodeDiffManchester()">Encode Differential Manchester</button>
+    <button onclick="encodeKeeloq()">Encode Keeloq</button>
     <h3>Results</h3>
     <div class="output" id="output"></div>
 </div>

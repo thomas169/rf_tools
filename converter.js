@@ -17,6 +17,59 @@ const STORAGE_KEYS = {
     inputWidth: "rf_input_width"
 };
 
+// load stuff then html is done
+window.addEventListener("DOMContentLoaded", () =>
+{
+    // get the doc elements we care about
+    els = {
+        input: document.getElementById("binaryInput"),
+        output: document.getElementById("output"),
+        convertIp: document.getElementById("convertIp"),
+        convertOp: document.getElementById("convertOp"),
+        shiftLvl: document.getElementById("shiftLvl"),
+        shiftDir: document.getElementById("shiftDir"),
+        manchesterMode: document.getElementById("manchesterMode"),
+        diffInit: document.getElementById("diffInit")
+    };
+
+    // Load saved values on startup
+    loadSettings();
+
+    const elements = [
+        "binaryInput",
+        "convertIp",
+        "convertOp",
+        "shiftLvl",
+        "shiftDir",
+        "manchesterMode",
+        "diffInit"
+    ];
+
+    elements.forEach(id =>
+    {
+        const el = document.getElementById(id);
+        el.addEventListener("input", saveSettings);
+        el.addEventListener("change", saveSettings);
+    });
+
+    // save textarea resize changes
+    const inputBox = document.getElementById("binaryInput");
+
+    // poll size changes caused by textarea resize handle
+    let lastW = inputBox.offsetWidth;
+    let lastH = inputBox.offsetHeight;
+
+    setInterval(() =>
+    {
+        if (inputBox.offsetWidth !== lastW || inputBox.offsetHeight !== lastH) {
+            lastW = inputBox.offsetWidth;
+            lastH = inputBox.offsetHeight;
+            saveSettings();
+        }
+    }, 500);
+});
+
+
 function saveSettings()
 {
     const inputBox = document.getElementById("binaryInput");
@@ -82,59 +135,6 @@ function restoreTextareaSize()
         }
     }
 }
-
-
-// load stuff then html is done
-window.addEventListener("DOMContentLoaded", () =>
-{
-    // get the doc elements we care about
-    els = {
-        input: document.getElementById("binaryInput"),
-        output: document.getElementById("output"),
-        convertIp: document.getElementById("convertIp"),
-        convertOp: document.getElementById("convertOp"),
-        shiftLvl: document.getElementById("shiftLvl"),
-        shiftDir: document.getElementById("shiftDir"),
-        manchesterMode: document.getElementById("manchesterMode"),
-        diffInit: document.getElementById("diffInit")
-    };
-
-    // Load saved values on startup
-    loadSettings();
-
-    const elements = [
-        "binaryInput",
-        "convertIp",
-        "convertOp",
-        "shiftLvl",
-        "shiftDir",
-        "manchesterMode",
-        "diffInit"
-    ];
-
-    elements.forEach(id =>
-    {
-        const el = document.getElementById(id);
-        el.addEventListener("input", saveSettings);
-        el.addEventListener("change", saveSettings);
-    });
-
-    // save textarea resize changes
-    const inputBox = document.getElementById("binaryInput");
-
-    // poll size changes caused by textarea resize handle
-    let lastW = inputBox.offsetWidth;
-    let lastH = inputBox.offsetHeight;
-
-    setInterval(() =>
-    {
-        if (inputBox.offsetWidth !== lastW || inputBox.offsetHeight !== lastH) {
-            lastW = inputBox.offsetWidth;
-            lastH = inputBox.offsetHeight;
-            saveSettings();
-        }
-    }, 500);
-});
 
 function cleanBinary(str)
 {
@@ -359,6 +359,41 @@ function decodeDiffManchester()
     document.getElementById("output").textContent = out.trim();
 }
 
+
+function decodeKeeloq()
+{
+    const rows = getBitsFromInput();
+    const mode = document.getElementById("keeloqInvert").value;
+    let out = "";
+    
+    for (const row of rows) {
+        const bits = row.bits;
+        if (bits.length % 3 !== 0) {
+            document.getElementById("output").textContent ="require multiple of 3 bits";
+            return;
+        }
+
+        let decoded = "";
+        let errors = 0;
+        for (let i = 0; i < bits.length; i += 3) {
+            const triplet = bits.substr(i, 3);
+            if (mode === "1") {
+                if (triplet === "100") decoded += "1";
+                else if (triplet === "110") decoded += "0";
+                else { decoded += "?"; errors++; }
+            } else {
+                if (triplet === "100") decoded += "1";
+                else if (triplet === "110") decoded += "0";
+                else { decoded += "?"; errors++; }
+            }
+        }
+        out += "Bits:\n" + bits + "\n" +
+                "Keeloq Decoded:\n" + decoded + "\n" +
+                "HEX:\n" + bitsToHex(decoded.replace(/\?/g, '0')) + "\n" +
+                "Errors: " + errors + "\n\n";
+    }
+    document.getElementById("output").textContent = out.trim();
+}
 
 function encodeManchester()
 {
