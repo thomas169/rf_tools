@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
     shiftLvl: "rf_shift_lvl",
     shiftDir: "rf_shift_dir",
     manchesterMode: "rf_manchester_mode",
+    keeloqInvert: "rf_keeloq_invert",
     diffInit: "rf_diff_init",
     inputHeight: "rf_input_height",
     inputWidth: "rf_input_width"
@@ -29,6 +30,7 @@ window.addEventListener("DOMContentLoaded", () =>
         shiftLvl: document.getElementById("shiftLvl"),
         shiftDir: document.getElementById("shiftDir"),
         manchesterMode: document.getElementById("manchesterMode"),
+        keeloqInvert: document.getElementById("keeloqInvert"),
         diffInit: document.getElementById("diffInit")
     };
 
@@ -42,6 +44,7 @@ window.addEventListener("DOMContentLoaded", () =>
         "shiftLvl",
         "shiftDir",
         "manchesterMode",
+        "keeloqInvert",
         "diffInit"
     ];
 
