@@ -387,8 +387,8 @@ function decodeKeeloq()
                 else if (triplet === "110") decoded += "0";
                 else { decoded += "?"; errors++; }
             } else {
-                if (triplet === "100") decoded += "1";
-                else if (triplet === "110") decoded += "0";
+                if (triplet === "100") decoded += "0";
+                else if (triplet === "110") decoded += "1";
                 else { decoded += "?"; errors++; }
             }
         }
