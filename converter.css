@@ -1,93 +1,227 @@
+
+:root {
+  --bg:        #080c0f;
+  --panel:     #0d1318;
+  --border:    #1a2a1a;
+  --green:     #4fd88a;
+  --green-dim: #004422;
+  --cyan:      #00e5ff;
+  --amber:     #ffb300;
+  --red:       #ff3333;
+  --text:      #a0c8a0;
+  --text-dim:  #3a5a3a;
+  --font:      'Cascadia Code', monospace; 
+}
+
+* { box-sizing: border-box; }
+
 body {
-    font-family: Arial, sans-serif;
-    background: #1e1e1e;
-    color: #ddd;
-    padding: 5px 20px 10px 20px;
-    max-width: 100%;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  padding: 5px 20px 30px 20px;
+  max-width: 100%;
+  position: relative;
+  min-height: 100vh;
+  letter-spacing: 0.6px;
+}
+
+/* scanline overlay, matches the SDR console look */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.08) 3px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
 }
 
 h2 {
-    color: #ddd;
-    text-align: center;
-    padding: 3px;
-}
-
-textarea {
-    width: 100%;
-    min-height: 100px;
-    background: #2b2b2b;
-    color: #eee;
-    border: 1px solid #555;
-    padding: 10px;
-    font-family: monospace;
-    margin-bottom: 10px;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-button {
-    padding: 10px 16px;
-    margin: 5px;
-    background: #444;
-    color: #ddd;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #666;
-}
-
-.section {
-    border: 1px solid #444;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.output {
-    background: #121212;
-    padding: 10px;
-    white-space: pre-wrap;
-    font-family: monospace;
-    border: 1px solid #444;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-all;
+  font-family: var(--font);
+  color: var(--green);
+  text-align: center;
+  letter-spacing: 4px;
+  text-shadow: 0 0 12px var(--green);
+  padding: 10px 3px;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .title-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
 }
 
 .github-link {
-    justify-self: end;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity .2s, transform .2s;
+  justify-self: end;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: color .2s, transform .2s, filter .2s;
 }
-
 .github-link:hover {
-    color: #fff;
-    opacity: 1;
-    transform: scale(1.1);
+  color: var(--cyan);
+  filter: drop-shadow(0 0 6px var(--cyan));
+  transform: scale(1.1);
 }
 
-.small-select {
-    width: 120px;
+.section {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* corner brackets, signature console detail */
+.section::before,
+.section::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--green-dim);
+  border-style: solid;
+  opacity: .6;
+}
+.section::before {
+  top: -1px; left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.section::after {
+  bottom: -1px; right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+.section h3 {
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  background: #0a1008;
+  color: var(--green);
+  border: 1px solid var(--green-dim);
+  padding: 10px;
+  font-family: var(--font);
+  font-size: 13px;
+  letter-spacing: 1.0px;
+  margin-bottom: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box; /* important: prevents overflow */
+  resize: vertical;       /* user can only change height */
+
+}
+textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 8px var(--green-dim);
+}
+
+label {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 4px;
+  margin-right: 6px;
 }
 
 input, select {
-    background: #2b2b2b;
-    color: white;
-    border: 1px solid #555;
-    padding: 6px;
-    width: 100%;
-    margin-bottom: 10px;
-    font-family: monospace;
+  background: #0a1008;
+  color: var(--green);
+  border: 1px solid var(--green-dim);
+  padding: 6px 8px;
+  width: 100%;
+  margin-bottom: 10px;
+  font-family: var(--font);
+  font-size: 13px;
+  letter-spacing: 0.6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 6px var(--green-dim);
+}
+select option { background: #0a1008; }
+
+.small-select {
+  width: 180px;
+  display: inline-block;
+  margin-right: 12px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 5px 5px 5px 0;
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+  font-family: var(--font);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+button:hover {
+  background: rgba(0,255,136,0.08);
+  box-shadow: 0 0 10px rgba(0,255,136,0.25);
+}
+
+button:active {
+  background: rgba(0,255,136,0.16);
+}
+
+.results {
+  background: #050805;
+  color: var(--green);
+  padding: 12px;
+  white-space: pre-wrap;
+  font-family: var(--font);
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  border: 1px solid var(--border);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  min-height: 20px;
+  text-shadow: 0 0 6px rgba(0,255,136,0.35);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.footer {
+    margin-top: 40px;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    border-top: 1px solid #333;
 }

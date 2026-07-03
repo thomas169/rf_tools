@@ -11,15 +11,12 @@
 <body>
 <div class="title-bar">
     <div></div>
-
-    <h2>RF / Manchester Conversion Utility</h2>
-
+    <h2>RF Coding Conversion Utility</h2>
     <a href="https://github.com/thomas169/rf_tools"
        target="_blank"
        rel="noopener noreferrer"
        class="github-link"
        title="View on GitHub">
-
         <svg viewBox="0 0 16 16" width="28" height="28" aria-hidden="true">
             <path fill="currentColor"
                 d="M8 0C3.58 0 0 3.58 0 8a8.001 8.001 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
@@ -74,11 +71,39 @@
         <option value="0">0</option>
         <option value="1">1</option>
     </select>
-    <label>Keeloq:</label>
+    <br>
+    <label>Keeloq Code:</label>
     <select id="keeloqInvert" class="small-select">
-        <option value="0">0</option>
-        <option value="1">1</option>
+        <option value="0">Normal (110=1, 100=0)</option>
+        <option value="1">Alt (100=1, 110=0)</option>
     </select>
+    <h3>
+        Custom Script
+        <span
+            title="Available variables and functions for custom scripts:
+    bits      -> get input as binary string
+    hex       -> get input as hex string
+    output(x) -> append to Results
+    hexOf(x)  -> convert binary to hex
+
+Return a string via the output(x) function.
+The script runs once for each input line. JavaScript."
+            style="cursor: help;"
+        >ⓘ</span>
+    </h3>
+    <textarea id="customScript" spellcheck="false" rows="16">
+function x() {
+  z = [];
+  for (bit of bits) {
+    z.push(bit)
+  }
+  z = z.join().replaceAll(",","");
+  return z;
+}
+
+output(x());
+    </textarea>
+    <br>
     <h3>Actions</h3>
     <button id="convertBtn" onclick="convert()">Convert</button>
     <button onclick="shiftBits()">Shift Bits</button>
@@ -88,8 +113,13 @@
     <button onclick="encodeManchester()">Encode Manchester</button>
     <button onclick="encodeDiffManchester()">Encode Differential Manchester</button>
     <button onclick="encodeKeeloq()">Encode Keeloq</button>
+    <button onclick="runCustomScript()">Run Custom Script</button>
     <h3>Results</h3>
-    <div class="output" id="output"></div>
+    <div class="results" id="results"></div>
 </div>
 </body>
+<footer class="footer">
+    © 2026 by thomas169 & GPT 
+    <br>RF Coding Conversion Utility
+</footer>
 </html>

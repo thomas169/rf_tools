@@ -15,7 +15,8 @@ const STORAGE_KEYS = {
     keeloqInvert: "rf_keeloq_invert",
     diffInit: "rf_diff_init",
     inputHeight: "rf_input_height",
-    inputWidth: "rf_input_width"
+    codeHeight: "rf_code_height",
+    customScript: "rf_custom_script"
 };
 
 // load stuff then html is done
@@ -24,14 +25,15 @@ window.addEventListener("DOMContentLoaded", () =>
     // get the doc elements we care about
     els = {
         input: document.getElementById("binaryInput"),
-        output: document.getElementById("output"),
+        results: document.getElementById("results"),
         convertIp: document.getElementById("convertIp"),
         convertOp: document.getElementById("convertOp"),
         shiftLvl: document.getElementById("shiftLvl"),
         shiftDir: document.getElementById("shiftDir"),
         manchesterMode: document.getElementById("manchesterMode"),
         keeloqInvert: document.getElementById("keeloqInvert"),
-        diffInit: document.getElementById("diffInit")
+        diffInit: document.getElementById("diffInit"),
+        customScript: document.getElementById("customScript")
     };
 
     // Load saved values on startup
@@ -45,7 +47,8 @@ window.addEventListener("DOMContentLoaded", () =>
         "shiftDir",
         "manchesterMode",
         "keeloqInvert",
-        "diffInit"
+        "diffInit",
+        "customScript"
     ];
 
     elements.forEach(id =>
@@ -57,18 +60,23 @@ window.addEventListener("DOMContentLoaded", () =>
 
     // save textarea resize changes
     const inputBox = document.getElementById("binaryInput");
+    const codeBox = document.getElementById("customScript");
 
     // poll size changes caused by textarea resize handle
-    let lastW = inputBox.offsetWidth;
+
     let lastH = inputBox.offsetHeight;
+    let lastCodeH = codeBox.offsetHeight;
 
     setInterval(() =>
     {
-        if (inputBox.offsetWidth !== lastW || inputBox.offsetHeight !== lastH) {
-            lastW = inputBox.offsetWidth;
+        if ( inputBox.offsetHeight !== lastH) {
             lastH = inputBox.offsetHeight;
             saveSettings();
         }
+        if ( codeBox.offsetHeight !== lastCodeH) {
+            lastCodeH = codeBox.offsetHeight;
+            saveSettings();
+        }     
     }, 500);
 });
 
@@ -76,7 +84,7 @@ window.addEventListener("DOMContentLoaded", () =>
 function saveSettings()
 {
     const inputBox = document.getElementById("binaryInput");
-
+    const codeBox = document.getElementById("customScript");
     localStorage.setItem(STORAGE_KEYS.input, inputBox.value);
     localStorage.setItem(STORAGE_KEYS.convertIp, document.getElementById("convertIp").value);
     localStorage.setItem(STORAGE_KEYS.convertOp,document.getElementById("convertOp").value);
@@ -85,15 +93,17 @@ function saveSettings()
     localStorage.setItem(STORAGE_KEYS.manchesterMode, document.getElementById("manchesterMode").value);
     localStorage.setItem(STORAGE_KEYS.keeloqInvert, document.getElementById("keeloqInvert").value);
     localStorage.setItem(STORAGE_KEYS.diffInit, document.getElementById("diffInit").value);
+    localStorage.setItem(STORAGE_KEYS.customScript, document.getElementById("customScript").value);
 
     // remember textarea size
     localStorage.setItem(STORAGE_KEYS.inputHeight, inputBox.offsetHeight);
-    localStorage.setItem(STORAGE_KEYS.inputWidth, inputBox.offsetWidth);
+    localStorage.setItem(STORAGE_KEYS.codeHeight, codeBox.offsetHeight);
 }
 
 function loadSettings()
 {
     const inputBox = document.getElementById("binaryInput");
+    const codeBox = document.getElementById("customScript");
     const input = localStorage.getItem(STORAGE_KEYS.input);
 
     if (input !== null && input.trim().length > 0) {
@@ -107,6 +117,7 @@ function loadSettings()
     setIfExists("manchesterMode", STORAGE_KEYS.manchesterMode);
     setIfExists("keeloqInvert", STORAGE_KEYS.keeloqInvert);
     setIfExists("diffInit", STORAGE_KEYS.diffInit);
+    setIfExists("customScript", STORAGE_KEYS.customScript);
 
     restoreTextareaSize();
 }
@@ -123,20 +134,21 @@ function setIfExists(elementId, storageKey)
 function restoreTextareaSize()
 {
     const inputBox = document.getElementById("binaryInput");
+    const codeBox = document.getElementById("customScript");
     const savedHeight = parseInt(localStorage.getItem(STORAGE_KEYS.inputHeight));
-    const savedWidth = parseInt(localStorage.getItem(STORAGE_KEYS.inputWidth));
+    const codeWidth = parseInt(localStorage.getItem(STORAGE_KEYS.codeHeight));
     const padding = 40;
 
-    // only restore if it still fits onscreen
-    if (!isNaN(savedWidth)) {
-        if (savedWidth < window.innerWidth - padding) {
-            inputBox.style.width = savedWidth + "px";
-        }
-    }
+
 
     if (!isNaN(savedHeight)) {
         if (savedHeight < window.innerHeight - padding) {
             inputBox.style.height = savedHeight + "px";
+        }
+    }
+    if (!isNaN(codeWidth)) {
+        if (codeWidth < window.innerHeight - padding) {
+            codeBox.style.height = codeWidth + "px";
         }
     }
 }
@@ -261,7 +273,8 @@ function convert()
         }
         out += "Invalid input\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function shiftBits()
@@ -293,7 +306,8 @@ function shiftBits()
         }
         out += "\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function decodeManchester()
@@ -305,7 +319,7 @@ function decodeManchester()
     for (const row of rows) {
         const bits = row.bits;
         if (bits.length % 2 !== 0) {
-            document.getElementById("output").textContent ="require even number of bits";
+            els.results.textContent ="require even number of bits";
             return;
         }
         let decoded = "";
@@ -327,7 +341,8 @@ function decodeManchester()
                 "HEX:\n" + bitsToHex(decoded.replace(/\?/g, '0')) + "\n" +
                 "Errors: " + errors + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function decodeDiffManchester()
@@ -339,7 +354,7 @@ function decodeDiffManchester()
     for (const row of rows) {
         const bits = row.bits;
         if (bits.length < 2 || bits.length % 2 !== 0) {
-            document.getElementById("output").textContent = "require even number of bits";
+            els.results.textContent = "require even number of bits";
             return;
         }
         let decoded = "";
@@ -361,7 +376,8 @@ function decodeDiffManchester()
                 "HEX:\n" + bitsToHex(decoded.replace(/\?/g, '0')) + "\n" +
                 "Errors: " + errors + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 
@@ -374,7 +390,7 @@ function decodeKeeloq()
     for (const row of rows) {
         const bits = row.bits;
         if (bits.length % 3 !== 0) {
-            document.getElementById("output").textContent ="require multiple of 3 bits";
+            els.results.textContent ="require multiple of 3 bits";
             return;
         }
 
@@ -397,7 +413,8 @@ function decodeKeeloq()
                 "HEX:\n" + bitsToHex(decoded.replace(/\?/g, '0')) + "\n" +
                 "Errors: " + errors + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function encodeManchester()
@@ -408,7 +425,7 @@ function encodeManchester()
     for (const row of rows) {
         const bits = row.bits;
         if (!bits || !isBinary(bits)) {
-            document.getElementById("output").textContent = "Input not valid";
+            els.results.textContent = "Input not valid";
             return;
         }
         let encoded = "";
@@ -426,7 +443,8 @@ function encodeManchester()
                 "Manchester Encoded:\n" + encoded + "\n" +
                 "HEX:\n" + bitsToHex(encoded) + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function encodeDiffManchester()
@@ -436,7 +454,7 @@ function encodeDiffManchester()
     for (const row of rows) {
         const bits = row.bits;
         if (!bits || !isBinary(bits)) {
-            document.getElementById("output").textContent = "Input not valid";
+            els.results.textContent = "Input not valid";
             return;
         }
         let encoded = "";
@@ -461,8 +479,8 @@ function encodeDiffManchester()
                 "Differential Manchester Encoded:\n" + encoded + "\n" +
                 "HEX:\n" + bitsToHex(encoded) + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
-
+    els.results.textContent = out.trim();
+    return els.results.textContent;
 }
 
 function encodeKeeloq()
@@ -473,17 +491,17 @@ function encodeKeeloq()
     for (const row of rows) {
         const bits = row.bits;
         if (!bits || !isBinary(bits)) {
-            document.getElementById("output").textContent = "Input not valid";
+            els.results.textContent = "Input not valid";
             return;
         }
         let encoded = "";
         for (let i = 0; i < bits.length; i++) {
             const bit = bits[i];
             if (mode === "1") {
-                // 1 = 01,  0 = 10
+                // 1 = 100,  0 = 110
                 encoded += (bit === "1") ? "100" : "110";
             } else {
-                // 1 = 10,  0 = 01
+                // 1 = 110,  0 = 100
                 encoded += (bit === "1") ? "110" : "100";
             }
         }
@@ -491,5 +509,67 @@ function encodeKeeloq()
                 "Keeloq Encoded:\n" + encoded + "\n" +
                 "HEX:\n" + bitsToHex(encoded) + "\n\n";
     }
-    document.getElementById("output").textContent = out.trim();
+    els.results.textContent = out.trim();
+    return els.results.textContent;
+}
+
+
+function runCustomScript()
+{
+    const rows = getBitsFromInput();
+    const script = document.getElementById("customScript").value;
+
+    let out = "";
+
+    for (const row of rows)
+    {
+        const bits = row.bits;
+        const hex = row.hex;
+        const outputLines = [];
+
+        function output(msg)
+        {
+            outputLines.push(String(msg));
+        }
+
+        function hexOf(bitString)
+        {
+            return bitsToHex(bitString);
+        }
+
+        try
+        {
+            const fn = new Function(
+                "bits",
+                "hex",
+                "output",
+                "hexOf",
+                script
+            );
+
+            const result = fn(bits, hex, output, hexOf);
+
+            if (typeof result === "string")
+            {
+                out += result + "\n";
+            }
+            else if (typeof result === "object")
+            {
+                out += JSON.stringify(result, null, 2) + "\n";
+            }
+
+            if (outputLines.length)
+            {
+                out += outputLines.join("\n") + "\n";
+            }
+
+            out += "\n";
+        }
+        catch (e)
+        {
+            out += "Error: " + e.message + "\n\n";
+        }
+    }
+
+    els.results.textContent = out.trim();
 }
