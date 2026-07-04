@@ -199,7 +199,7 @@ button:active {
   background: rgba(0,255,136,0.16);
 }
 
-.results {
+.results, .demod_results {
   background: #050805;
   color: var(--green);
   padding: 12px;
@@ -224,4 +224,110 @@ a { color: inherit; text-decoration: none; }
     font-size: 12px;
     color: #888;
     border-top: 1px solid #333;
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(255,255,255,.25);
+    border-top: 6px solid white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.graph-container {
+    overflow: hidden;
+    border: 1px solid #555;
+    background: #111;
+}
+
+#signalGraph {
+    display: block;
+    width: 100%;
+    height: 220px;
+    image-rendering: pixelated;
+}
+
+.setting {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 12px 4px 0;
+}
+
+.setting label {
+    font-weight: 500;
+}
+/*
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid #444;
+    margin-bottom: 15px;
+}
+
+.tab-button {
+    background: #2d2d2d;
+    color: #aaa;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 10px 20px;
+    margin-right: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    border-bottom: 2px solid transparent;
+    transition: background 0.2s, color 0.2s;
+}
+
+.tab-button:hover {
+    background: #3a3a3a;
+    color: white;
+}
+
+.tab-button.active {
+    background: #1e1e1e;
+    color: white;
+    border: 2px solid #444;
+    border-bottom: 2px solid #1e1e1e;
+    margin-bottom: -2px;
+    font-weight: bold;
+}
+
+.tab-content {
+    border: 2px solid #444;
+    border-top: none;
+    padding-top: 15px;
+}
+*/
+
+.graph-container {
+    width: 100%;
+    height: 220px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid #555;
+    background: #111;
+}
+
+#signalGraph {
+    display: block;
+    height: 220px;
 }

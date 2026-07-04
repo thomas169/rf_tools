@@ -78,6 +78,7 @@ window.addEventListener("DOMContentLoaded", () =>
             saveSettings();
         }     
     }, 500);
+
 });
 
 
@@ -85,7 +86,12 @@ function saveSettings()
 {
     const inputBox = document.getElementById("binaryInput");
     const codeBox = document.getElementById("customScript");
-    localStorage.setItem(STORAGE_KEYS.input, inputBox.value);
+    
+    // Don't persist huge imports
+    if (inputBox.value.length < 100000)
+    {
+        localStorage.setItem(STORAGE_KEYS.input, inputBox.value);
+    }
     localStorage.setItem(STORAGE_KEYS.convertIp, document.getElementById("convertIp").value);
     localStorage.setItem(STORAGE_KEYS.convertOp,document.getElementById("convertOp").value);
     localStorage.setItem(STORAGE_KEYS.shiftLvl, document.getElementById("shiftLvl").value);
@@ -252,6 +258,15 @@ function bitsToHex(bits)
     }
 
     return hex.join(' ');
+}
+
+function showTab(id, button)
+{
+    document.querySelectorAll(".tab-content").forEach(t => t.style.display = "none");
+    document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+
+    document.getElementById(id).style.display = "block";
+    button.classList.add("active");
 }
 
 function convert()
